@@ -1,0 +1,13 @@
+---
+- name: Configure /etc/motd for SSH Login Message
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Copy MOTD file from /files/motd to /etc/motd
+      copy:
+        src: motd
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: '0644'
