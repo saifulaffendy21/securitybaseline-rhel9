@@ -1,0 +1,25 @@
+- name: Disable root login in sshd_config and sshd_config.d
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure PermitRootLogin is set to no in /etc/ssh/sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+        create: yes
+
+    - name: Ensure PermitRootLogin is set to no in all files under sshd_config.d
+      lineinfile:
+        path: "{{ item }}"
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+        create: yes
+      loop: "{{ query('fileglob', '/etc/ssh/sshd_config.d/*.conf') }}"
+
+    - name: Restart sshd service to apply changes
+      service:
+        name: sshd
+        state: restarted
