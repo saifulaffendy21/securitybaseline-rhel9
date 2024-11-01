@@ -10,16 +10,6 @@
         state: present
         create: true
 
-    - name: Ensure PermitRootLogin is set to no in all files under sshd_config.d
-      lineinfile:
-        path: "{{ item }}"
-        regexp: '^PermitRootLogin'
-        line: 'PermitRootLogin no'
-        state: present
-        create: true
-      with_fileglob:
-        - /etc/ssh/sshd_config.d/*.conf
-
     - name: Restart sshd service to apply changes
       service:
         name: sshd
