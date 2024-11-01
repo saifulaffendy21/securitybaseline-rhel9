@@ -9,8 +9,10 @@
         line: 'PermitRootLogin no'
         state: present
         create: true
+      register: sshd_config_changed
 
     - name: Restart sshd service to apply changes
       service:
         name: sshd
         state: restarted
+      when: sshd_config_changed.changed
